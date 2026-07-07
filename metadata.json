@@ -1,0 +1,6 @@
+{
+  "name": "PDF De-identification",
+  "description": "Upload a PDF document to automatically identify and redact personally identifiable information (PII) such as names, accounts, emails, and phone numbers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
