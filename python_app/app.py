@@ -47,6 +47,10 @@ class RedactConfigSchema(BaseModel):
     manual_phones: Optional[List[str]] = None
     manual_cin_no: Optional[List[str]] = None
     manual_bars: Optional[List[str]] = None
+    manual_cins: Optional[List[str]] = None
+    manual_gsts: Optional[List[str]] = None
+    manual_ifscs: Optional[List[str]] = None
+    manual_accounts: Optional[List[str]] = None
     redact_categories: Optional[List[str]] = None
 
 @app.get("/", response_class=HTMLResponse)
@@ -151,6 +155,77 @@ async def serve_ui():
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1.5">Custom Dictionary Tags (Comma separated)</label>
                             <input type="text" id="manualBars" placeholder="e.g. SecretProject, TopConfidential" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                        </div>
+
+                        <div class="pt-2">
+                            <button
+                                type="button"
+                                id="toggleOverridesBtn"
+                                onclick="toggleAllOverrides()"
+                                class="w-full text-[10px] uppercase tracking-wider font-bold text-slate-400 py-2.5 border-t border-b border-dashed border-slate-800 flex items-center justify-between hover:text-white hover:border-slate-600 transition"
+                            >
+                                <span>Show All Tag-Specific Overrides</span>
+                                <span class="text-xs">▼</span>
+                            </button>
+                        </div>
+
+                        <div id="allOverridesContainer" class="hidden space-y-4 pt-2">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1.5 flex justify-between">
+                                    <span>Manual Vehicles</span>
+                                    <span class="text-[10px] text-indigo-400 italic font-mono">[VEHICLE]</span>
+                                </label>
+                                <input type="text" id="manualVehicles" placeholder="e.g. DL-1C-AB-7234, MH-04-XYZ-1456" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1.5 flex justify-between">
+                                    <span>Manual Phones</span>
+                                    <span class="text-[10px] text-indigo-400 italic font-mono">[PHONE]</span>
+                                </label>
+                                <input type="text" id="manualPhones" placeholder="e.g. 9876543210, +91 99999 88888" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1.5 flex justify-between">
+                                    <span>Manual Emails</span>
+                                    <span class="text-[10px] text-indigo-400 italic font-mono">[EMAIL]</span>
+                                </label>
+                                <input type="text" id="manualEmails" placeholder="e.g. user@domain.com, contact@shaip.com" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1.5 flex justify-between">
+                                    <span>Manual Bar Councils</span>
+                                    <span class="text-[10px] text-indigo-400 italic font-mono">[BAR_COUNCIL]</span>
+                                </label>
+                                <input type="text" id="manualBarCouncils" placeholder="e.g. D/560/2009, IP/DEL/2014/0342" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1.5 flex justify-between">
+                                    <span>Manual CIN Numbers</span>
+                                    <span class="text-[10px] text-indigo-400 italic font-mono">[CIN]</span>
+                                </label>
+                                <input type="text" id="manualCins" placeholder="e.g. U72900DL2014PTC281355" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1.5 flex justify-between">
+                                    <span>Manual GST Numbers</span>
+                                    <span class="text-[10px] text-indigo-400 italic font-mono">[GST]</span>
+                                </label>
+                                <input type="text" id="manualGsts" placeholder="e.g. 07AAECP8388Q1Z5" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1.5 flex justify-between">
+                                    <span>Manual IFSC Codes</span>
+                                    <span class="text-[10px] text-indigo-400 italic font-mono">[IFSC]</span>
+                                </label>
+                                <input type="text" id="manualIfscs" placeholder="e.g. HDFC0001234, BARB0COLABA" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1.5 flex justify-between">
+                                    <span>Manual Accounts</span>
+                                    <span class="text-[10px] text-indigo-400 italic font-mono">[ACCOUNT]</span>
+                                </label>
+                                <input type="text" id="manualAccounts" placeholder="e.g. 50200012345678, 123456789" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -271,6 +346,20 @@ async def serve_ui():
             "bar": { label: "Custom Tags", color: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20", tag: "[BAR]" }
         };
 
+        let showAllOverrides = false;
+        function toggleAllOverrides() {
+            showAllOverrides = !showAllOverrides;
+            const btn = document.getElementById("toggleOverridesBtn");
+            const container = document.getElementById("allOverridesContainer");
+            if (showAllOverrides) {
+                container.classList.remove("hidden");
+                btn.innerHTML = `<span>Hide All Tag-Specific Overrides</span><span class="text-xs">▲</span>`;
+            } else {
+                container.classList.add("hidden");
+                btn.innerHTML = `<span>Show All Tag-Specific Overrides</span><span class="text-xs">▼</span>`;
+            }
+        }
+
         let selectedFile = null;
         let activeJobId = null;
         let activeResponseData = null;
@@ -377,6 +466,14 @@ async def serve_ui():
                 manual_persons: document.getElementById("manualPersons").value.split(",").map(x => x.trim()).filter(Boolean),
                 manual_companies: document.getElementById("manualCompanies").value.split(",").map(x => x.trim()).filter(Boolean),
                 manual_bars: document.getElementById("manualBars").value.split(",").map(x => x.trim()).filter(Boolean),
+                manual_vehicles: document.getElementById("manualVehicles").value.split(",").map(x => x.trim()).filter(Boolean),
+                manual_phones: document.getElementById("manualPhones").value.split(",").map(x => x.trim()).filter(Boolean),
+                manual_emails: document.getElementById("manualEmails").value.split(",").map(x => x.trim()).filter(Boolean),
+                manual_bar_councils: document.getElementById("manualBarCouncils").value.split(",").map(x => x.trim()).filter(Boolean),
+                manual_cins: document.getElementById("manualCins").value.split(",").map(x => x.trim()).filter(Boolean),
+                manual_gsts: document.getElementById("manualGsts").value.split(",").map(x => x.trim()).filter(Boolean),
+                manual_ifscs: document.getElementById("manualIfscs").value.split(",").map(x => x.trim()).filter(Boolean),
+                manual_accounts: document.getElementById("manualAccounts").value.split(",").map(x => x.trim()).filter(Boolean),
                 redact_categories: selectedCategories
             };
 
